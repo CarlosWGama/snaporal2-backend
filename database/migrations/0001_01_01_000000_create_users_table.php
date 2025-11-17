@@ -11,12 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        Schema::create('niveis', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome');
+            $table->timestamps();
+        });
+
         Schema::create('usuarios', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->bigInteger('nivel_id')->unsigned()->default(1)->comment('1 - Especialista | 2 - Profissional');
+            $table->foreign('nivel_id')->references('id')->on('niveis'); // Example enum column
             $table->boolean('admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
@@ -30,7 +39,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('usuario_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -43,6 +52,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('niveis');
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

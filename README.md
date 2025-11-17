@@ -7,5 +7,5 @@ docker compose up -d
 
 ### Rodando migração no banco
 ```bash
-docker compose exec php artisan migrate
+docker compose exec app php artisan migrate
 ```
