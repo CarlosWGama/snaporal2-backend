@@ -11,6 +11,7 @@ Route::prefix('usuarios')->controller(UsuariosController::class)->group(function
     Route::post('/login', 'login');
     Route::post('/recuperar-senha', 'solicitarRecuperacaoSenha');
     Route::put('/recuperar-senha/{token}', 'recuperarSenha');
+    Route::post('/', 'create');
     
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/perfil', 'perfil');
@@ -20,7 +21,6 @@ Route::prefix('usuarios')->controller(UsuariosController::class)->group(function
         Route::put('/{id}', 'update');
         
         Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
-            Route::post('/', 'create');
             Route::get('/', 'list');
         });
 

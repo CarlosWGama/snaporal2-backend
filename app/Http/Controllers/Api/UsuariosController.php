@@ -66,8 +66,9 @@ class UsuariosController extends Controller
         
         //Cadastrar
         $dados = $request->only(['nome', 'email', 'password', 'nivel_id', 'admin']);
-        if (!$request->user()->tokenCan('admin')) {
+        if (!$request->user() || !$request->user()->tokenCan('admin')) {
             $dados['admin'] = false;
+            $dados['nivel_id'] = 1;
         }
 
         $usuario = Usuario::create($dados);
@@ -122,6 +123,12 @@ class UsuariosController extends Controller
      * Deleta usuário pelo id
      */
     public function delete(Request $request, $id) {
+        
+        //Caso não seja admin, não pode deletar outros usuários
+        if (!$request->user()->tokenCan('admin')) {
+            $id = $request->user()->id;
+        }
+
         $usuario = Usuario::findOrFail($id);
         $usuario->delete();
      

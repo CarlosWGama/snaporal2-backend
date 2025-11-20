@@ -37,7 +37,7 @@ Authorization: Bearer {{adminToken}}
 
 {
     "nome": "teste",
-    "email": "carloswgama@gmail.com",
+    "email": "teste3@gmail.com",
     "password": "123456",
     "admin": true,
     "nivel_id": 1
