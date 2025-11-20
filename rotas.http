@@ -1,6 +1,6 @@
 @baseURL = http://localhost:8000/api
-@adminToken = 5|vywj9TIV1L8wzu4t2XVoPby9HFEC2Pk5YgPKDv8H1887e923
-@profissionalToken = 6|fMya05whFuVyM9BTivpn9rS8cRifPgS1vJYCbWENe2d94828
+@adminToken = 37|ioxF0L9SxB1iNR3QuBMW80qYicBfS74kzOgjXhH13badf3d0
+@profissionalToken = 32|WN6CcodAsaBS6l5KcYpNR3XggDxlxtJ2Na3kd0gw3283d954
 
 # ------------------------------------------
 # USUARIOS
@@ -11,16 +11,22 @@ POST {{baseURL}}/usuarios/login
 Content-Type: application/json
 
 {
-    "email": "profissional@teste.com",
+    "email": "admin@teste.com",
     "password": "123456"
 }
+
+# Logout
+###
+GET {{baseURL}}/usuarios/logout
+Accept: application/json
+Authorization: Bearer {{profissionalToken}}
 
 
 # Perfil
 ###
 GET {{baseURL}}/usuarios/perfil
 Accept: application/json
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{profissionalToken}}
 
 # CADASTRAR
 ###
@@ -31,7 +37,7 @@ Authorization: Bearer {{adminToken}}
 
 {
     "nome": "teste",
-    "email": "teste@teste.com",
+    "email": "carloswgama@gmail.com",
     "password": "123456",
     "admin": true,
     "nivel_id": 1
@@ -70,3 +76,23 @@ DELETE {{baseURL}}/usuarios/4
 Accept: application/json
 Authorization: Bearer {{adminToken}}
 
+# SOLICITAR RECUPERAR SENHA
+###
+POST {{baseURL}}/usuarios/recuperar-senha
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "carloswgama@gmail.com"
+}
+
+# ALTERAR SENHA
+###
+@tokenRecuperarSenha = eyJpdiI6Ik9ISUVvMG5HNmNScmo0R2NlQUlKSVE9PSIsInZhbHVlIjoiYldZVDRubkhhc2p2cEk0cmFNZnFvZz09IiwibWFjIjoiMDY3ZDIyMGE2MWU2Yzc5MDg4YzliYmI1NWRkMzEwMjY2OTkyZjBkY2MzYTM0NzFiZDJmYjExZTNiYWE0NzFiNCIsInRhZyI6IiJ9
+PUT {{baseURL}}/usuarios/recuperar-senha/{{tokenRecuperarSenha}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "password": "123456"
+}

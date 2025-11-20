@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RecuperarSenhaMail;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Crypt;
 
 class UsuariosController extends Controller
 {
@@ -24,11 +27,19 @@ class UsuariosController extends Controller
             if ($usuario->nivel_id == 1) $permissoes[] = 'profissional';
             else $permissoes[] = 'especialista';
             
-            $token = $usuario->createToken('jwt', $permissoes, now()->addWeek(4))->plainTextToken;
-            return response()->json($token, 200);
+            $token = $usuario->createToken('token', $permissoes, now()->addWeek(4))->plainTextToken;
+            return response()->json(['token' => $token, 'usuario' => $usuario], 200);
         }
 
         return response()->json('Login ou senha inválidos', 404);
+    }
+
+    /**
+     * Realiza o logout do usuário
+     **/
+    public function logout(Request $request) {
+        $request->user()->tokens()->delete();
+        return response()->json('Deslogado', 201);
     }
 
     /**
@@ -51,7 +62,7 @@ class UsuariosController extends Controller
         ]);
  
         //Falha na autenticação
-        if ($validator->fails()) return response()->json($validator->errors(), 400);
+        if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
         
         //Cadastrar
         $dados = $request->only(['nome', 'email', 'password', 'nivel_id', 'admin']);
@@ -90,7 +101,7 @@ class UsuariosController extends Controller
             'nivel_id'  => 'required|numeric'
         ]);
 
-        if ($validator->fails()) return response()->json($validator->errors(), 400);
+        if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
 
         $dados = $request->all();
         
@@ -113,8 +124,52 @@ class UsuariosController extends Controller
     public function delete(Request $request, $id) {
         $usuario = Usuario::findOrFail($id);
         $usuario->delete();
+     
         return response()->json($usuario, 200);
     }
+
+    /**
+     * Solicita a recuperação de senha
+     */
+    public function solicitarRecuperacaoSenha(Request $request) {
+        
+        $usuario = Usuario::where('email', $request->input('email'))->firstOrFail();
+
+        $token = Crypt::encryptString($usuario->id.'-'.date('Ymd'));
+        $url = env('FRONT_WEB_URL', 'en_US') . '/recuperar-senha/' . $token . '?email=' . $usuario->email;
+
+        Mail::to($usuario->email)->send(new RecuperarSenhaMail($usuario, $url));
+    }
+
+    /**
+     * Solicita a recuperação de senha
+     */
+    public function recuperarSenha(Request $request, $token) {
+        
+        try {            
+            $validator = Validator::make($request->all(), [
+                'password'  => 'min:6',
+            ]);
+            
+            if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
+            
+            $dados = explode('-', Crypt::decryptString($token));
+            $id = $dados[0];
+            $data = $dados[1];
+            if ($data != date('Ymd')) return response()->json('Token expirado', 400);
+
+            $usuario = Usuario::findOrFail($id);
+            $usuario->password = $request->input('password');
+            $usuario->save();
+
+            return response()->json('Senha alterada com sucesso', 200);
+
+        } catch (DecryptException $e) {
+            return response()->json('Token inválido', 400);
+        }
+    }
+
+
 
 
 
