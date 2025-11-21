@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\GatewayController;
 use App\Http\Controllers\Api\UsuariosController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,14 @@ Route::prefix('usuarios')->controller(UsuariosController::class)->group(function
         });
 
     });
+});
+
+//SÓ ROTAS AUTENTICADAS
+Route::middleware('auth:sanctum')->group(function () {
+    
+    //GATEWAY API
+    Route::controller(GatewayController::class)->group(function() {
+        Route::post('/scan/{type}', 'scan');
+    });
+
 });
