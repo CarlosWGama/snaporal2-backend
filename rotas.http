@@ -6,12 +6,15 @@
 # USUARIOS
 # ------------------------------------------
 # LOGIN
+# admin@teste.com
+# profissional@teste.com
+# especialista@teste.com
 ###
 POST {{baseURL}}/usuarios/login
 Content-Type: application/json
 
 {
-    "email": "admin@teste.com",
+    "email": "profissional@teste.com",
     "password": "123456"
 }
 
@@ -96,6 +99,21 @@ Content-Type: application/json
 {
     "password": "123456"
 }
+
+
+###############################################################
+# CHAT LLM
+###############################################################
+
+### ENVIAR MENSAGEM
+POST {{baseURL}}/chat
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+    "mensagem": "Sabe me dizer se consigo agendar uma consulta com profissional?"
+}   
 
 
 ###############################################################

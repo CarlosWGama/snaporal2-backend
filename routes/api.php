@@ -2,13 +2,15 @@
 
 use App\Http\Controllers\Api\GatewayController;
 use App\Http\Controllers\Api\UsuariosController;
+use App\Http\Controllers\Api\ChatController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 
-Route::prefix('usuarios')->controller(UsuariosController::class)->group(function () {
 
+Route::prefix('usuarios')->controller(UsuariosController::class)->group(function () {
+    
     Route::post('/login', 'login');
     Route::post('/recuperar-senha', 'solicitarRecuperacaoSenha');
     Route::put('/recuperar-senha/{token}', 'recuperarSenha');
@@ -24,13 +26,16 @@ Route::prefix('usuarios')->controller(UsuariosController::class)->group(function
         Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
             Route::get('/', 'list');
         });
-
+        
     });
 });
 
 //SÓ ROTAS AUTENTICADAS
 Route::middleware('auth:sanctum')->group(function () {
     
+    //CHAT LLM
+    Route::post('/chat', [ChatController::class, 'chat']);
+
     //GATEWAY API
     Route::controller(GatewayController::class)->group(function() {
         Route::post('/scan/{type}', 'scan');
