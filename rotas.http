@@ -1,5 +1,5 @@
 @baseURL = http://localhost:8000/api
-@adminToken = 4|hIYDJ9ZbsCBGd2Rnik5r9UsUXJyvBNhDCMHFBT1Wf9aebf47
+@adminToken = 8|D4xhxh12tVOaDyzvHqtGiHL8FfLiKxRRwL8x0vrpc0ca3ec9
 @profissionalToken = 3|F34q2eCRnNsRixFRL39akZAAYk0mUAnrOhtwJzBx82a6af4c
 @especialistaToken = 1|bbt334JX8HnK24ZPt2nshrAYv3QZAIvgNsMu6r1I70f84fc9
 # ------------------------------------------
@@ -54,7 +54,7 @@ Authorization: Bearer {{adminToken}}
 
 # BUSCAR UM USER PELO ID
 ###
-GET {{baseURL}}/users/4
+GET {{baseURL}}/users/10
 Accept: application/json
 Authorization: Bearer {{adminToken}}
 

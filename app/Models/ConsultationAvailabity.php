@@ -20,33 +20,33 @@ class ConsultationAvailabity extends Model
         'saturday',
     ];
 
-    protected $appends = ['SundayHours', 'MondayHours', 'TuesdayHours', 'WednesdayHours', 'ThursdayHours', 'FridayHours', 'SaturdayHours'];
+    protected $appends = ['sundayHours', 'mondayHours', 'tuesdayHours', 'wednesdayHours', 'thursdayHours', 'fridayHours', 'saturdayHours'];
 
-    public function getSundayHoursAttribute() {
+    public function getsundayHoursAttribute() {
         return $this->getHours('sunday');
     }
 
-    public function getMondayHoursAttribute() {
+    public function getmondayHoursAttribute() {
         return $this->getHours('monday');
     }
 
-    public function getTuesdayHoursAttribute() {
+    public function gettuesdayHoursAttribute() {
         return $this->getHours('tuesday');
     }
 
-    public function getWednesdayHoursAttribute() {
+    public function getwednesdayHoursAttribute() {
         return $this->getHours('wednesday');
     }
 
-    public function getThursdayHoursAttribute() {
+    public function getthursdayHoursAttribute() {
         return $this->getHours('thursday');
     }
 
-    public function getFridayHoursAttribute() {
+    public function getfridayHoursAttribute() {
         return $this->getHours('friday');
     }
 
-    public function getSaturdayHoursAttribute() {
+    public function getsaturdayHoursAttribute() {
         return $this->getHours('saturday');
     }
 
@@ -57,5 +57,18 @@ class ConsultationAvailabity extends Model
             $hours[] = $hour->hour;
         }
         return $hours;
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'sunday' => 'boolean',
+            'monday' => 'boolean',
+            'tuesday' => 'boolean',
+            'wednesday' => 'boolean',
+            'thursday' => 'boolean',
+            'friday' => 'boolean',
+            'saturday' => 'boolean',
+        ];
     }
 }

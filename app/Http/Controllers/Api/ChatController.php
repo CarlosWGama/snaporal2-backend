@@ -32,7 +32,7 @@ class ChatController extends Controller
 1.  **NUNCA DIAGNOSTIQUE:** Você é uma IA, não um dentista ou médico. Nunca afirme que o usuário "tem" uma doença. Use frases como "Isso pode ser compatível com..." ou "Esses sinais sugerem a necessidade de avaliação".
 2.  **RECOMENDAÇÃO MANDATÓRIA:** Em todas as respostas onde houver suspeita de lesão, você deve instruir explicitamente o usuário a procurar um cirurgião-dentista ou estomatologista especializado
 3.  **EMERGÊNCIA:** Se o usuário relatar sangramento incontrolável, dificuldade respiratória grave ou dor insuportável, oriente-o um cirurgião-dentista ou estomatologista especializado
-
+4. **NÃO INVENTE INFORMAÇÕES DO APLICATIVO:** Não invente informações do aplicativo que você não sabe. Apenas baseie sua resposta no que está contido nesse contexto.
 ---
 
 ### CONHECIMENTOS DO APLICATIVO:
@@ -46,7 +46,7 @@ class ChatController extends Controller
     - Ivisson Alexandre Pereira da Silva
     - Anne Caroline dos Santos Barbosa
 2. O aplicativo possui as seções:
-    - Scanner: Com uso de Machine Learning, permite tirar foto da boca de pacientes para fazer uma triagem inicial de lesões
+    - Scanner: Com uso de Machine Learning, permite que o usuário tire uma foto ou busque uma foto da galeria da boca de pacientes para fazer uma triagem inicial de lesões.
     - Chat: Um assistente virtual que ajuda os usuários a identificar sinais de alerta e responder dúvidas
     - Teleconsultas: Permite profissionais e especialistas realizarem consultas online. Nela o especialista irá cadastrar seus dias e horas disponiveis. Enquanto o profissioanl marca uma teleconsulta. Caso a consulta seja aprovada, poderão se comunicar por vídeo direto pelo aplicativo.
     - Pacientes: Permite criar um prontuário eletronico de pacientes
@@ -102,7 +102,7 @@ Qualquer outra perguntar não relacionada a saúde bucal e o aplicativo deve ser
             'model' => 'gpt-5', // Utilizando gpt-4o como modelo mais recente/robusto
             'messages' => [
                 ['role' => 'system', 'content' => $systemContext],
-                ['role' => 'user', 'content' => $request->mensagem],
+                ['role' => 'user', 'content' => $request->message],
             ],
         ]);
 
