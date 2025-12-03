@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Nivel;
+use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class NivelSeed extends Seeder
+class RolesSeed extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class NivelSeed extends Seeder
     public function run(): void
     {
         //
-        Nivel::create(['nome' => 'Especialista']);
-        Nivel::create(['nome' => 'Profissional']);
+        Role::create(['name' => 'Especialista']);
+        Role::create(['name' => 'Profissional']);
     }
 }

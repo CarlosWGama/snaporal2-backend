@@ -1,5 +1,5 @@
 <x-mail::message>
-# Olá! {{$usuario->nome}}
+# Olá! {{$user->name}}
 
 Você está recebendo esse email, porque solicitou recuperar senha. 
 

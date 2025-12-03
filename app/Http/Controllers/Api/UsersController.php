@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Mail\RecuperarSenhaMail;
-use App\Models\Usuario;
+use App\Mail\RecoverPasswordMail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -12,23 +12,23 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Crypt;
 
-class UsuariosController extends Controller
+class UsersController extends Controller
 {
     /**
      * Realiza o login do usuário
      **/
     public function login(Request $request) {
         if (Auth::attempt($request->only(['email', 'password']))) {
-            $usuario = Auth::user();
+            $user = Auth::user();
             
             //Permissões
             $permissoes = [];
-            if ($usuario->admin) $permissoes[] = 'admin';
-            if ($usuario->nivel_id == 1) $permissoes[] = 'profissional';
+            if ($user->admin) $permissoes[] = 'admin';
+            if ($user->nivel_id == 1) $permissoes[] = 'profissional';
             else $permissoes[] = 'especialista';
             
-            $token = $usuario->createToken('token', $permissoes, now()->addWeek(4))->plainTextToken;
-            return response()->json(['token' => $token, 'usuario' => $usuario], 200);
+            $token = $user->createToken('token', $permissoes, now()->addWeek(4))->plainTextToken;
+            return response()->json(['token' => $token, 'user' => $user], 200);
         }
 
         return response()->json('Login ou senha inválidos', 404);
@@ -45,7 +45,7 @@ class UsuariosController extends Controller
     /**
      * Retorna os dados do usuário logado
      */
-    public function perfil(Request $request) {
+    public function profile(Request $request) {
         return response()->json($request->user(), 200);
     }
 
@@ -55,40 +55,40 @@ class UsuariosController extends Controller
     public function create(Request $request) {
 
         $validator = Validator::make($request->all(), [
-            'nome'      => 'required',
-            'email'     => 'required|email|unique:usuarios,email',
+            'name'      => 'required',
+            'email'     => 'required|email|unique:users,email',
             'password'  => 'required|min:6',
-            'nivel_id'  => 'required|numeric'
+            'role_id'  => 'required|numeric'
         ]);
  
         //Falha na autenticação
         if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
         
         //Cadastrar
-        $dados = $request->only(['nome', 'email', 'password', 'nivel_id', 'admin']);
+        $dados = $request->only(['name', 'email', 'password', 'role_id', 'admin']);
         if (!$request->user() || !$request->user()->tokenCan('admin')) {
             $dados['admin'] = false;
-            $dados['nivel_id'] = 1;
+            $dados['role_id'] = 1;
         }
 
-        $usuario = Usuario::create($dados);
-        return response()->json($usuario, 201);
+        $user = User::create($dados);
+        return response()->json($user, 201);
     }
 
     /**
      * Retorna a lista de usuários cadastrados no sistema
      */
     public function list(Request $request) {
-        $usuarios = Usuario::all();
-        return response()->json($usuarios, 200);
+        $users = User::all();
+        return response()->json($users, 200);
     }
 
     /**
      * Retorna os dados de um usuário pelo ID
      */
     public function get(Request $request, $id) {
-        $usuario = Usuario::find($id);
-        return response()->json($usuario, 200);
+        $user = User::find($id);
+        return response()->json($user, 200);
     }
 
     /**
@@ -96,10 +96,10 @@ class UsuariosController extends Controller
      */
     public function update(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'nome'      => 'required',
-            'email'     => ['required', 'email', Rule::unique('usuarios')->ignore($id)],
+            'name'      => 'required',
+            'email'     => ['required', 'email', Rule::unique('users')->ignore($id)],
             'password'  => 'min:6',
-            'nivel_id'  => 'required|numeric'
+            'role_id'  => 'required|numeric'
         ]);
 
         if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
@@ -109,14 +109,14 @@ class UsuariosController extends Controller
         //Caso não seja admin, não pode editar nível, acesso e outros usuários
         if (!$request->user()->tokenCan('admin')) {
             unset($dados['admin']);
-            unset($dados['nivel_id']);
+            unset($dados['role_id']);
             $id = $request->user()->id;
         }  
 
-        $usuario = Usuario::findOrFail($id);
-        $usuario->fill($dados);
-        $usuario->save();
-        return response()->json($usuario, 200);
+        $user = User::findOrFail($id);
+        $user->fill($dados);
+        $user->save();
+        return response()->json($user, 200);
     }
 
     /**
@@ -129,29 +129,29 @@ class UsuariosController extends Controller
             $id = $request->user()->id;
         }
 
-        $usuario = Usuario::findOrFail($id);
-        $usuario->delete();
+        $user = User::findOrFail($id);
+        $user->delete();
      
-        return response()->json($usuario, 200);
+        return response()->json($user, 200);
     }
 
     /**
      * Solicita a recuperação de senha
      */
-    public function solicitarRecuperacaoSenha(Request $request) {
+    public function requestRecoverPassword(Request $request) {
         
-        $usuario = Usuario::where('email', $request->input('email'))->firstOrFail();
+        $user = User::where('email', $request->input('email'))->firstOrFail();
 
-        $token = Crypt::encryptString($usuario->id.'-'.date('Ymd'));
-        $url = env('FRONT_WEB_URL', 'en_US') . '/recuperar-senha/' . $token . '?email=' . $usuario->email;
+        $token = Crypt::encryptString($user->id.'-'.date('Ymd'));
+        $url = env('FRONT_URL', 'http://localhost:3000/') . '/recover-password/' . $token . '?email=' . $user->email;
 
-        Mail::to($usuario->email)->send(new RecuperarSenhaMail($usuario, $url));
+        Mail::to($user->email)->send(new RecoverPasswordMail($user, $url));
     }
 
     /**
      * Solicita a recuperação de senha
      */
-    public function recuperarSenha(Request $request, $token) {
+    public function recoverPassword(Request $request, $token) {
         
         try {            
             $validator = Validator::make($request->all(), [
@@ -165,9 +165,9 @@ class UsuariosController extends Controller
             $data = $dados[1];
             if ($data != date('Ymd')) return response()->json('Token expirado', 400);
 
-            $usuario = Usuario::findOrFail($id);
-            $usuario->password = $request->input('password');
-            $usuario->save();
+            $user = User::findOrFail($id);
+            $user->password = $request->input('password');
+            $user->save();
 
             return response()->json('Senha alterada com sucesso', 200);
 

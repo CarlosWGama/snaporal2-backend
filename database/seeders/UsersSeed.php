@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Usuario;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class UsuariosSeed extends Seeder
+class UsersSeed extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,28 +14,28 @@ class UsuariosSeed extends Seeder
     public function run(): void
     {
         //
-        Usuario::create([
-            'nome'      => 'Admin',
+        User::create([
+            'name'      => 'Admin',
             'email'     => 'admin@teste.com',
             'password'  => '123456',
             'admin'     => true,
-            'nivel_id'  => 1
+            'role_id'  => 1
         ]);
 
-        Usuario::create([
-            'nome'      => 'Especialista',
+        User::create([
+            'name'      => 'Especialista',
             'email'     => 'especialista@teste.com',
             'password'  => '123456',
             'admin'     => false,
-            'nivel_id'  => 1
+            'role_id'  => 1
         ]);
 
-        Usuario::create([
-            'nome'      => 'Profissional',
+        User::create([
+            'name'      => 'Profissional',
             'email'     => 'profissional@teste.com',
             'password'  => '123456',
             'admin'     => false,
-            'nivel_id'  => 2
+            'role_id'  => 2
         ]);
     }
 }

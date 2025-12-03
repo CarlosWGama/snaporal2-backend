@@ -9,17 +9,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RecuperarSenhaMail extends Mailable {
+class RecoverPasswordMail extends Mailable {
     use Queueable, SerializesModels;
 
-    public $usuario;
+    public $user;
     public $url;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($usuario, $url) {
-        $this->usuario = $usuario;
+    public function __construct($user, $url) {
+        $this->user = $user;
         $this->url = $url;
     }
 
@@ -38,7 +38,7 @@ class RecuperarSenhaMail extends Mailable {
      */
     public function content(): Content
     {
-        return new Content(markdown: 'emails.recuperar_senha');
+        return new Content(markdown: 'emails.recover_password');
     }
 
     /**

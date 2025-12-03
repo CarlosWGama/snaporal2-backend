@@ -5,15 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use OpenAI;
+use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
 {
     //
 
     public function chat(Request $request) {
-        $request->validate([
-            'mensagem' => 'required|string',
+
+        $validator = Validator::make($request->all(), [
+            'message' => 'required|string',
         ]);
+ 
+        //Campo vázio
+        if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
 
         $apiKey = env('LLM_OPENAI_API_KEY');
         
@@ -102,7 +107,7 @@ Qualquer outra perguntar não relacionada a saúde bucal e o aplicativo deve ser
         ]);
 
         return response()->json([
-            'mensagem' => $response->choices[0]->message->content,
+            'message' => $response->choices[0]->message->content,
         ]);
     }
 }
