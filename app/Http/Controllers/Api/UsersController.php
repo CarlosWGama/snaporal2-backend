@@ -87,7 +87,7 @@ class UsersController extends Controller
      * Retorna os dados de um usuário pelo ID
      */
     public function get(Request $request, $id) {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         return response()->json($user, 200);
     }
 
@@ -143,7 +143,7 @@ class UsersController extends Controller
         $user = User::where('email', $request->input('email'))->firstOrFail();
 
         $token = Crypt::encryptString($user->id.'-'.date('Ymd'));
-        $url = env('FRONT_URL', 'http://localhost:3000/') . '/recover-password/' . $token . '?email=' . $user->email;
+        $url = env('FRONT_URL', 'http://localhost:3000/') . '/recuperar-senha/' . $token . '?email=' . $user->email;
 
         Mail::to($user->email)->send(new RecoverPasswordMail($user, $url));
     }
