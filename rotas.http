@@ -166,3 +166,46 @@ Content-Type: application/json
 GET {{baseURL}}/consultation/availability/2
 Authorization: Bearer {{especialistaToken}}
 Accept: application/json
+
+
+### CADASTRAR CONSULTA
+POST {{baseURL}}/consultation
+Authorization: Bearer {{especialistaToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "professional_id": 3,
+    "specialist_id": 2,
+    "date": "2025-12-05",
+    "hour": "15:00"
+}
+
+### BUSCA CONSULTAS
+GET {{baseURL}}/consultation?page=1&mobile=true
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+
+### BUSCA CONSULTA
+GET {{baseURL}}/consultation/1
+Authorization: Bearer {{especialistaToken}}
+Accept: application/json
+
+
+### BUSCA CONSULTA
+PUT {{baseURL}}/consultation/1
+Authorization: Bearer {{especialistaToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "status": "completed"
+}
+
+
+### DELETA CONSULTA
+DELETE {{baseURL}}/consultation/1
+Authorization: Bearer {{especialistaToken}}
+Accept: application/json
+

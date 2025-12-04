@@ -45,9 +45,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //CONSULTA
     Route::prefix('/consultation')->controller(ConsultationController::class)->group(function() {
-
         Route::put('/availability', 'updateAvailability');
         Route::get('/availability/{specialistID}', 'getAvailability');
+        Route::post('/', 'create');
+        Route::get('/', 'list');
+        Route::get('/{id}', 'get');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
     });
 
 });
