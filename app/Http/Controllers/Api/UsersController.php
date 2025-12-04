@@ -79,7 +79,27 @@ class UsersController extends Controller
      * Retorna a lista de usuários cadastrados no sistema
      */
     public function list(Request $request) {
-        $users = User::all();
+
+        $userModel = User::query();
+        $pageSize = 10;
+
+        if ($request->has('name')) $userModel = $userModel->where('name', 'like', '%' . $request->name . '%');
+        if ($request->has('email')) $userModel = $userModel->where('email', 'like', '%' . $request->email . '%');
+        if ($request->has('role_id')) $userModel = $userModel->where('role_id', $request->role_id);
+        if ($request->has('admin')) $userModel = $userModel->where('admin', $request->admin);
+
+        $users = $userModel->orderBy('name','ASC')->paginate($pageSize);
+        return response()->json([
+            'itens' => $users->items(),
+            'total' => $users->total(),
+            'currentFirst'  => $users->firstItem(),
+            'currentLast'   => $users->lastItem(),
+            'completed'     => $users->onLastPage(),
+        ]);
+    }
+
+    public function listSpecialists(Request $request) {
+        $users = User::where('role_id', 1)->orderBy('name','ASC')->get();
         return response()->json($users, 200);
     }
 

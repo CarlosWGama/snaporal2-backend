@@ -214,7 +214,7 @@ class ConsultationController extends Controller
         $consultations = $consultationsModel->orderBy('date', 'desc')->orderBy('hour','desc')->paginate($pageSize);
 
         return response()->json([
-            'consultations' => $consultations->items(),
+            'items'         => $consultations->items(),
             'total'         => $consultations->total(),
             'currentFirst'  => $consultations->firstItem(),
             'currentLast'   => $consultations->lastItem(),

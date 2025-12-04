@@ -48,7 +48,13 @@ Authorization: Bearer {{adminToken}}
 
 # BUSCAR USUÁRIOS
 ###
-GET {{baseURL}}/users
+GET {{baseURL}}/users?role_id=1
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+# BUSCAR USUARIOS ESPECIALISTAS
+###
+GET {{baseURL}}/users/specialists
 Accept: application/json
 Authorization: Bearer {{adminToken}}
 
