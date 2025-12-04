@@ -166,8 +166,11 @@ class ConsultationController extends Controller
         else {
             $userID =  $request->user()->id;
             $consultation = Consultation::where('id', $consultationID)
-                                            ->where('specialist_id', $userID)
-                                            ->orWhere('professional_id', $userID)
+                                            ->where(function($query) use ($userID) {
+                                                $query
+                                                    ->where('specialist_id', $userID)
+                                                    ->orWhere('professional_id', $userID);
+                                            })
                                             ->firstOrFail();
         }
         
@@ -186,8 +189,11 @@ class ConsultationController extends Controller
         else {
             $userID =  $request->user()->id;
             $consultation = Consultation::where('id', $consultationID)
-                                            ->where('specialist_id', $userID)
-                                            ->orWhere('professional_id', $userID)
+                                            ->where(function($query) use ($userID) {
+                                                $query
+                                                    ->where('specialist_id', $userID)
+                                                    ->orWhere('professional_id', $userID);
+                                            })
                                             ->firstOrFail();
         }
         $consultation->delete();
@@ -207,8 +213,12 @@ class ConsultationController extends Controller
         $userID = $request->user()->id;
         
         if ($mobile || !$request->user()->admin) {
-            $consultationsModel = $consultationsModel->where('specialist_id', $userID)
-                                                        ->orWhere('professional_id', $userID);
+            $consultationsModel = $consultationsModel->where('date', '>=', date('Y-m-d'))
+                                                    ->where(function($query) use ($userID) {
+                                                        $query
+                                                            ->where('specialist_id', $userID)
+                                                            ->orWhere('professional_id', $userID);
+                                                    });
         }
 
         $consultations = $consultationsModel->orderBy('date', 'desc')->orderBy('hour','desc')->paginate($pageSize);
@@ -234,8 +244,11 @@ class ConsultationController extends Controller
         else {
             $userID =  $request->user()->id;
             $consultation = Consultation::where('id', $consultationID)
-                                            ->where('specialist_id', $userID)
-                                            ->orWhere('professional_id', $userID)
+                                            ->where(function($query) use ($userID) {
+                                                $query
+                                                    ->where('specialist_id', $userID)
+                                                    ->orWhere('professional_id', $userID);
+                                            })
                                             ->firstOrFail();
         }
         return response()->json($consultation);

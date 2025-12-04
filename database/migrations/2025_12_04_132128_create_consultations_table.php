@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('hour');
             $table->string('stream_url')->nullable();
-            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'closed'])->default('pending');
             $table->softDeletes();
             $table->timestamps();
         });

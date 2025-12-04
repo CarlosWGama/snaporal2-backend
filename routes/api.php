@@ -21,10 +21,10 @@ Route::prefix('users')->controller(UsersController::class)->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
        
         Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
-            Route::get('/specialists', 'listSpecialists');
             Route::get('/', 'list');
         });
-
+        
+        Route::get('/specialists', 'listSpecialists');
         Route::get('/profile', 'profile');
         Route::get('/logout', 'logout');
         Route::get('/{id}', 'get');

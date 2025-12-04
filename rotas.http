@@ -183,13 +183,13 @@ Content-Type: application/json
 {
     "professional_id": 3,
     "specialist_id": 2,
-    "date": "2025-12-05",
-    "hour": "15:00"
+    "date": "2025-12-31",
+    "hour": "10:00"
 }
 
 ### BUSCA CONSULTAS
 GET {{baseURL}}/consultation?page=1&mobile=true
-Authorization: Bearer {{adminToken}}
+Authorization: Bearer {{especialistaToken}}
 Accept: application/json
 
 
@@ -200,13 +200,13 @@ Accept: application/json
 
 
 ### BUSCA CONSULTA
-PUT {{baseURL}}/consultation/1
+PUT {{baseURL}}/consultation/6
 Authorization: Bearer {{especialistaToken}}
 Accept: application/json
 Content-Type: application/json
 
 {
-    "status": "completed"
+    "status": "pending"
 }
 
 
