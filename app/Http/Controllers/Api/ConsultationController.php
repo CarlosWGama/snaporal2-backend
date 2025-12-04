@@ -203,7 +203,7 @@ class ConsultationController extends Controller
     public function list(Request $request) {
         $consultationsModel = Consultation::query();
         $mobile = $request->mobile ?? false; //SE está vindo do mobile ou do gerenciador
-        $pageSize = 5;
+        $pageSize = 10;
         $userID = $request->user()->id;
         
         if ($mobile || !$request->user()->admin) {
@@ -216,9 +216,10 @@ class ConsultationController extends Controller
         return response()->json([
             'items'         => $consultations->items(),
             'total'         => $consultations->total(),
-            'currentFirst'  => $consultations->firstItem(),
+            'currentFirst'      => $consultations->firstItem(),
             'currentLast'   => $consultations->lastItem(),
-            'completed'     => $consultations->onLastPage(),
+            'firstPage'     => $consultations->onFirstPage(),
+            'lastPage'      => $consultations->onLastPage(),
         ]);
     }
 

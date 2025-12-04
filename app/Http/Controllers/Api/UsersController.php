@@ -90,11 +90,12 @@ class UsersController extends Controller
 
         $users = $userModel->orderBy('name','ASC')->paginate($pageSize);
         return response()->json([
-            'itens' => $users->items(),
+            'items' => $users->items(),
             'total' => $users->total(),
             'currentFirst'  => $users->firstItem(),
             'currentLast'   => $users->lastItem(),
-            'completed'     => $users->onLastPage(),
+            'firstPage'     => $users->onFirstPage(),
+            'lastPage'      => $users->onLastPage(),
         ]);
     }
 
