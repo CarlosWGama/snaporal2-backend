@@ -83,11 +83,12 @@ class UsersController extends Controller
         $userModel = User::query();
         $pageSize = 10;
 
-        if ($request->has('name')) $userModel = $userModel->where('name', 'like', '%' . $request->name . '%');
-        if ($request->has('email')) $userModel = $userModel->where('email', 'like', '%' . $request->email . '%');
-        if ($request->has('role_id')) $userModel = $userModel->where('role_id', $request->role_id);
-        if ($request->has('admin')) $userModel = $userModel->where('admin', $request->admin);
+        if ($request->name) $userModel = $userModel->whereRaw('lower(name) like ?', ['%' . strtolower($request->name) . '%']);
+        if ($request->email) $userModel = $userModel->whereRaw('lower(email) like ?', ['%' . strtolower($request->email) . '%']);
+        if ($request->role_id) $userModel = $userModel->where('role_id', $request->role_id);
+        if ($request->has('admin') && $request->admin != -1) $userModel = $userModel->where('admin', $request->admin);
 
+        //echo $userModel->toSql();die;
         $users = $userModel->orderBy('name','ASC')->paginate($pageSize);
         return response()->json([
             'items' => $users->items(),

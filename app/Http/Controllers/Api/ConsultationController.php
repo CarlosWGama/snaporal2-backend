@@ -209,7 +209,7 @@ class ConsultationController extends Controller
     public function list(Request $request) {
         $consultationsModel = Consultation::query();
         $mobile = $request->mobile ?? false; //SE está vindo do mobile ou do gerenciador
-        $pageSize = 10;
+        $pageSize = 2;
         $userID = $request->user()->id;
         
         if ($mobile || !$request->user()->admin) {
@@ -220,6 +220,12 @@ class ConsultationController extends Controller
                                                             ->orWhere('professional_id', $userID);
                                                     });
         }
+
+        //FILTROS
+        if ($request->date_start) $consultationsModel = $consultationsModel->where('date', '>=', $request->date_start);
+        if ($request->date_end) $consultationsModel = $consultationsModel->where('date', '<=', $request->date_end);
+        if ($request->status) $consultationsModel = $consultationsModel->where('status', $request->status);
+            
 
         $consultations = $consultationsModel->orderBy('date', 'desc')->orderBy('hour','desc')->paginate($pageSize);
 

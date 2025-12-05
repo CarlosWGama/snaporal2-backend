@@ -48,7 +48,7 @@ Authorization: Bearer {{adminToken}}
 
 # BUSCAR USUÁRIOS
 ###
-GET {{baseURL}}/users?role_id=1
+GET {{baseURL}}/users?page=1&name=carlos&email=&role_id=1&admin=1
 Accept: application/json
 Authorization: Bearer {{adminToken}}
 
