@@ -1,6 +1,6 @@
 @baseURL = http://localhost:8000/api
 @adminToken = 8|D4xhxh12tVOaDyzvHqtGiHL8FfLiKxRRwL8x0vrpc0ca3ec9
-@profissionalToken = 3|F34q2eCRnNsRixFRL39akZAAYk0mUAnrOhtwJzBx82a6af4c
+@profissionalToken = 15|O1jGtlaFOaIrFY2HXezqVnBrwGmtiPGNti4Wg2hj585f0fd9
 @especialistaToken = 1|bbt334JX8HnK24ZPt2nshrAYv3QZAIvgNsMu6r1I70f84fc9
 # ------------------------------------------
 # USERS
@@ -14,7 +14,7 @@ POST {{baseURL}}/users/login
 Content-Type: application/json
 
 {
-    "email": "admin@teste.com",
+    "email": "profissional@teste.com",
     "password": "123456"
 }
 
@@ -215,3 +215,47 @@ DELETE {{baseURL}}/consultation/1
 Authorization: Bearer {{especialistaToken}}
 Accept: application/json
 
+###############################################################
+# PACIENTES
+###############################################################
+
+### CADASTRAR PACIENTE
+POST {{baseURL}}/patients
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Carlos",
+    "phone": "123456789",
+    "birth_date": "2025-12-01",
+    "gender": "male"
+}
+
+### BUSCAR PACIENTES
+GET {{baseURL}}/patients?page=1&name=carlos
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+
+### BUSCAR PACIENTE
+GET {{baseURL}}/patients/1
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+
+### ATUALIZAR PACIENTE
+PUT {{baseURL}}/patients/1
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Carlos",
+    "phone": "(82) 88888-8888",
+    "birth_date": "2025-12-01",
+    "gender": "male"
+}
+
+### DELETA PACIENTE
+DELETE {{baseURL}}/patients/1
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json

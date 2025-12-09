@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\GatewayController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\ConsultationController;
+use App\Http\Controllers\Api\PatientsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +51,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/consultation')->controller(ConsultationController::class)->group(function() {
         Route::put('/availability', 'updateAvailability');
         Route::get('/availability/{specialistID}', 'getAvailability');
+        Route::post('/', 'create');
+        Route::get('/', 'list');
+        Route::get('/{id}', 'get');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
+    });
+
+    //PACIENTES
+    Route::prefix('/patients')->controller(PatientsController::class)->group(function() {
         Route::post('/', 'create');
         Route::get('/', 'list');
         Route::get('/{id}', 'get');

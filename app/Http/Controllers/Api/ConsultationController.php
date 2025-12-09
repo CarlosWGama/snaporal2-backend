@@ -245,7 +245,7 @@ class ConsultationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function get(Request $request, $consultationID) {
-        if ($request->user()->admin)
+        if ($request->user()->tokenCan('admin'))
             $consultation = Consultation::findOrFail($consultationID);
         else {
             $userID =  $request->user()->id;
