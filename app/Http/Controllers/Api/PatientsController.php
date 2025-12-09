@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Models\PatientProgress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -56,7 +57,8 @@ class PatientsController extends Controller {
         $page = $request->page ?? 1;
         $pageSize = 10;
 
-        if ($request->name) $userModel = $patientModel->whereRaw('lower(name) like ?', ['%' . strtolower($request->name) . '%']);
+        if ($request->name) $patientModel = $patientModel->whereRaw('lower(name) like ?', ['%' . strtolower($request->name) . '%']);
+        if ($request->gender) $patientModel = $patientModel->where('gender', $request->gender);
 
         $patients = $patientModel->paginate($pageSize, ['*'], 'page', $page);
         return response()->json([
@@ -86,8 +88,7 @@ class PatientsController extends Controller {
 
         if ($validator->fails()) return response()->json($validator->errors()->all(), 400);
         
-        $data = $request->all();
-        unset($data['created_by_user_id']);
+        $data = $request->except('created_by_user_id');
         $data['updated_by_user_id'] = $request->user()->id;
 
         $patient = Patient::findOrFail($id);
@@ -103,7 +104,7 @@ class PatientsController extends Controller {
      * @param mixed $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request, $id) {
+    public function delete(Request $request, $id) {
         $patient = Patient::findOrFail($id);
         
         if (!$request->user()->tokenCan('admin') && $request->user()->id != $patient->created_by_user_id) 
@@ -111,5 +112,76 @@ class PatientsController extends Controller {
         
         $patient->delete();
         return response()->json($patient, 200);
+    }
+
+    /**
+     * Retorna a lista de evoluções de um paciente
+     */
+    public function listProgresses(Request $request, $patientID) {
+        $progresses = PatientProgress::where('patient_id', $patientID)->orderBy('date', 'desc')->get();
+        return response()->json($progresses, 200);
+    }
+
+    /**
+     * Retorna a evolução de um paciente
+     * @param Request $request
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProgress(Request $request, $patientID, $id) {
+        $progress = PatientProgress::findOrFail($id);
+        return response()->json($progress, 200);
+    }
+
+    /**
+     * Cadastra uma evolução de um paciente
+     */
+    public function createProgress(Request $request, $patientID) {
+        $validador = Validator::make($request->all(), [
+            'description' => 'required',
+            'date' => 'date',
+        ]);
+
+        if ($validador->fails()) return response()->json($validador->errors()->all(), 400);
+        
+        $data = $request->all();
+        $data['patient_id'] = $patientID;
+        $data['created_by_user_id'] = $request->user()->id;
+        $data['updated_by_user_id'] = $request->user()->id;
+
+        $progress = PatientProgress::create($data);
+        return response()->json($progress, 201);
+    }
+
+    /**
+     * Atualiza uma evolução de um paciente
+     */
+    public function updateProgress(Request $request, $patientID, $id) {
+        $validador = Validator::make($request->all(), [
+            'description' => 'required',
+            'date' => 'date',
+        ]);
+
+        if ($validador->fails()) return response()->json($validador->errors()->all(), 400);
+        
+        $data = $request->except(['patient_id', 'created_by_user_id']);
+        $data['updated_by_user_id'] = $request->user()->id;
+
+        $progress = PatientProgress::findOrFail($id);
+        $progress->fill($data);
+        $progress->save();
+        return response()->json($progress, 200);
+    }
+
+    /**
+     * Remove uma evolução de um paciente
+     * @param Request $request
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteProgress(Request $request, $patientID, $id) {
+        $progress = PatientProgress::findOrFail($id);
+        $progress->delete();
+        return response()->json($progress, 200);
     }
 }

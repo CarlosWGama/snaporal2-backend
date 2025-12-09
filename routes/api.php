@@ -60,6 +60,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //PACIENTES
     Route::prefix('/patients')->controller(PatientsController::class)->group(function() {
+
+        //Evolução
+        Route::prefix('/{patientID}/progress')->controller(PatientsController::class)->group(function() {
+            Route::post('/', 'createProgress');
+            Route::get('/', 'listProgresses');
+            Route::get('/{id}', 'getProgress');
+            Route::put('/{id}', 'updateProgress');
+            Route::delete('/{id}', 'deleteProgress');
+        });
+
+        //Pacientes 
         Route::post('/', 'create');
         Route::get('/', 'list');
         Route::get('/{id}', 'get');

@@ -259,3 +259,47 @@ Content-Type: application/json
 DELETE {{baseURL}}/patients/1
 Authorization: Bearer {{profissionalToken}}
 Accept: application/json
+
+
+########################################################
+## EVOLUÇÃO
+#########################################################
+@patientID = 1
+@progressID = 2
+
+### CADASTRAR EVOLUÇÃO
+POST {{baseURL}}/patients/{{patientID}}/progress
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "description": "Evolução do paciente",
+    "date": "2025-12-01"
+}
+
+### BUSCAR EVOLUÇÕES
+GET {{baseURL}}/patients/{{patientID}}/progress
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+
+### BUSCAR EVOLUÇÃO
+GET {{baseURL}}/patients/{{patientID}}/progress/{{progressID}}
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+
+### ATUALIZAR EVOLUÇÃO
+PUT {{baseURL}}/patients/{{patientID}}/progress/{{progressID}}
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "description": "Atualização da eEvolução do paciente",
+    "date": "2025-12-09"
+}
+
+### DELETA EVOLUÇÃO
+DELETE {{baseURL}}/patients/{{patientID}}/progress/{{progressID}}
+Authorization: Bearer {{profissionalToken}}
+Accept: application/json
