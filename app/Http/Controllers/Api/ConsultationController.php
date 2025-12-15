@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Consultation;
 use App\Models\ConsultationAvailabity;
 use App\Models\ConsultationAvailabityHour;
+use GetStream\StreamChat\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -245,10 +246,10 @@ class ConsultationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function get(Request $request, $consultationID) {
+        $userID =  $request->user()->id;
         if ($request->user()->tokenCan('admin'))
             $consultation = Consultation::findOrFail($consultationID);
         else {
-            $userID =  $request->user()->id;
             $consultation = Consultation::where('id', $consultationID)
                                             ->where(function($query) use ($userID) {
                                                 $query
@@ -257,6 +258,26 @@ class ConsultationController extends Controller
                                             })
                                             ->firstOrFail();
         }
-        return response()->json($consultation);
+
+        
+        $data = $consultation->toArray();
+        //Gerando o token
+        $client = new Client(env('GET_STREAM_API_KEY'), env('GET_STREAM_API_SECRET'));
+        
+        //Cria o usuário
+        $client->upsertUser($user = [
+            'id'    => "".$request->user()->id,
+            'name'  => $request->user()->name,
+            'role'  => 'user',
+        ]);
+
+        // (Opcional) Defina data de expiração (ex: 4 hora)
+        // Se omitido, o token não expira
+        $expiration = time() + (60 * 60 * 4);
+
+        //$data['token'] = $client->createToken($userID, $expiration);
+        $data['token'] = $client->createToken($userID, $expiration);
+
+        return response()->json($data);
     }
 }

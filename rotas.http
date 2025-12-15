@@ -194,19 +194,19 @@ Accept: application/json
 
 
 ### BUSCA CONSULTA
-GET {{baseURL}}/consultation/1
+GET {{baseURL}}/consultation/8
 Authorization: Bearer {{especialistaToken}}
 Accept: application/json
 
 
-### BUSCA CONSULTA
-PUT {{baseURL}}/consultation/6
+### ATUALIZAR CONSULTA
+PUT {{baseURL}}/consultation/8
 Authorization: Bearer {{especialistaToken}}
 Accept: application/json
 Content-Type: application/json
 
 {
-    "status": "pending"
+    "status": "confirmed"
 }
 
 
