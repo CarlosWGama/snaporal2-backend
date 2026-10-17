@@ -99,7 +99,7 @@ Qualquer outra perguntar não relacionada a saúde bucal e o aplicativo deve ser
 
 
         $response = $client->chat()->create([
-            'model' => 'gpt-5', // Utilizando gpt-4o como modelo mais recente/robusto
+            'model' => 'gpt-6-luna', // Utilizando gpt-4o como modelo mais recente/robusto
             'messages' => [
                 ['role' => 'system', 'content' => $systemContext],
                 ['role' => 'user', 'content' => $request->message],
